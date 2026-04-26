@@ -62,17 +62,13 @@ class FakeChatRepository {
     fun getThreads(): List<ChatThread> {
         return contacts.map { contact ->
             val messages = messagesByThread[contact.id].orEmpty().sortedBy { it.sentAt }
-            val latest = messages.maxByOrNull { it.sentAt }
             ChatThread(
                 id = contact.id,
                 contact = contact,
                 messages = messages,
-                unreadCount = messages.count { it.senderId != "me" && it.status != MessageStatus.READ },
-                isOnline = contact.id != "c2",
-                isTyping = false,
-                latestMessageAt = latest?.sentAt ?: Instant.now().minus(1, ChronoUnit.DAYS)
+                isOnline = contact.id != "c2"
             )
-        }.sortedByDescending { it.latestMessageAt }
+        }.sortedByDescending { thread -> thread.latestMessage?.sentAt ?: Instant.EPOCH }
     }
 
     fun getMessages(threadId: String): List<ChatMessage> {

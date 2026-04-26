@@ -15,3 +15,5 @@
 *.apk
 *.aab
 .android-sdk/
+
+app/build/

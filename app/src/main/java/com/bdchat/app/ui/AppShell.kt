@@ -46,6 +46,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bdchat.app.model.ChatMessage
+import com.bdchat.app.model.CURRENT_USER_ID
 import com.bdchat.app.model.ChatThread
 import com.bdchat.app.viewmodel.ChatViewModel
 import java.time.ZoneId
@@ -273,7 +274,7 @@ private fun ConversationScreen(
 @Composable
 private fun MessageBubble(message: ChatMessage) {
     val isMine = message.isOutgoing
-    val horizontalAlignment = if (isMine) Alignment.CenterEnd else Alignment.CenterStart
+    val rowArrangement = if (isMine) Arrangement.End else Arrangement.Start
     val bubbleColor = if (isMine) {
         MaterialTheme.colorScheme.primaryContainer
     } else {
@@ -285,8 +286,8 @@ private fun MessageBubble(message: ChatMessage) {
         MaterialTheme.colorScheme.onSurfaceVariant
     }
 
-    Column(
-        horizontalAlignment = horizontalAlignment,
+    Row(
+        horizontalArrangement = rowArrangement,
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
