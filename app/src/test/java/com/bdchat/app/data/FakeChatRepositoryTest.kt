@@ -12,12 +12,12 @@ class FakeChatRepositoryTest {
     @Test
     fun sendMessage_appendsNewMessage() = runBlocking {
         val repository = FakeChatRepository()
-        val initialMessages = repository.messagesFor("thread_1")
+        val initialMessages = repository.getMessages("c1")
         val originalSize = initialMessages.size
 
-        val sent = repository.sendMessage("thread_1", "Hello from test")
+        val sent = repository.sendMessage("c1", "Hello from test")
 
-        val afterMessages = repository.messagesFor("thread_1")
+        val afterMessages = repository.getMessages("c1")
         assertEquals(originalSize + 1, afterMessages.size)
         assertEquals(sent, afterMessages.last())
         assertEquals("Hello from test", sent?.text)
@@ -26,11 +26,11 @@ class FakeChatRepositoryTest {
     @Test
     fun sendMessage_doesNotCreateWhenBlank() = runBlocking {
         val repository = FakeChatRepository()
-        val beforeSize = repository.messagesFor("thread_2").size
+        val beforeSize = repository.getMessages("c2").size
 
-        val sent = repository.sendMessage("thread_2", "   ")
+        val sent = repository.sendMessage("c2", "   ")
 
-        val afterSize = repository.messagesFor("thread_2").size
+        val afterSize = repository.getMessages("c2").size
         assertEquals(beforeSize, afterSize)
         assertEquals(null, sent)
     }
@@ -39,17 +39,17 @@ class FakeChatRepositoryTest {
     fun chatSummaries_returnInDescendingLastUpdatedOrder() = runBlocking {
         val repository = FakeChatRepository()
 
-        repository.sendMessage("thread_2", "Newest")
-        val summaries = repository.chatSummaries()
+        repository.sendMessage("c2", "Newest")
+        val summaries = repository.getThreads()
 
         assertTrue(summaries.isNotEmpty())
-        assertEquals("thread_2", summaries.first().id)
+        assertEquals("c2", summaries.first().id)
     }
 
     @Test
     fun messagesFor_unknownChat_returnsEmptyList() = runBlocking {
         val repository = FakeChatRepository()
-        val messages: List<ChatMessage> = repository.messagesFor("missing")
+        val messages: List<ChatMessage> = repository.getMessages("missing")
         assertFalse(messages.isNotEmpty())
     }
 }
